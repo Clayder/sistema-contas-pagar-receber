@@ -4,23 +4,28 @@
  */
 
 namespace app\controller;
-use app\banco\Bd;
+use app\view\View;
 abstract class Controller
 {
     /**
-     * @var Bd Bd
+     * @var View
      */
-    protected $db;
+    protected $view;
 
     public function __construct()
     {
-        $this->db = new Bd();
+        $this->view = new View();
     }
 
-    /**
-     * @param string $view
-     */
-    protected function view($view){
-       include PASTA_BASE_VIEW."/".$view.".php";
+    protected function pagina(){
+        $this->view->header();
+        $this->view->menuProfile();
+        $this->view->sidebar();
+        $this->view->menuFooter();
+        $this->view->topNavigation();
+        $this->view->principal("grafico");
+        $this->view->footer();
     }
+
+    
 }
