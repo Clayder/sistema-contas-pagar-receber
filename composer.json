@@ -1,8 +1,7 @@
 {
   "autoload": {
     "psr-4": {
-      "app\\": "app/",
-      "system\\banco\\": "banco/"
+      "app\\": "app/"
     }
   }
 }

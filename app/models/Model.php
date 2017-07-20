@@ -1,15 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: clayder
- * Date: 19/07/17
- * Time: 23:54
- */
-
 namespace app\models;
+use app\database\Bd;
 
-
-class Model
+abstract class Model
 {
+    /**
+     * @var Bd
+     */
+    protected $bd;
+
+    /**
+     * @var \PDO
+     */
+    protected $pdo;
+    public function __construct()
+    {
+        $this->bd = new Bd();
+        $this->pdo = $this->bd->getPdo();
+    }
+
 
 }
