@@ -2,7 +2,7 @@
 /**
  * @author Peter Clayder
  */
-namespace app\banco;
+namespace system\banco;
 use \PDO;
 class Bd extends Driver
 {

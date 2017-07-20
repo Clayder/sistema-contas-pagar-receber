@@ -4,7 +4,7 @@
  */
 namespace app\config;
 
-use app\controller\Dicionario;
+use app\controller\Controller;
 
 class Routes
 {
@@ -13,7 +13,8 @@ class Routes
      */
     public static function init()
     {
-        $dicionario = new Dicionario();
+        /*
+        $dicionario = new Controller();
         if (empty($_REQUEST['rota'])) {
             $dicionario->formCadastro();
         } else {
@@ -36,5 +37,6 @@ class Routes
                 default:
             }
         }
+        */
     }
 }
