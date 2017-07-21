@@ -4,7 +4,6 @@
 #-------------------------
 /nbproject/
 .idea/*
-.bower_components/gentella/production/*
 
 ## Sublime Text cache files
 *.tmlanguage.cache
