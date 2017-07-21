@@ -9,8 +9,7 @@ class Cliente extends Controller
      */
     public function index(){
         $cliente = new ClienteModel();
-        $data = new \DateTime();
-        $dados['dateTime'] = $data->format("Y-m-d H:m:s");
+        $dados['dateTime'] = dateTime();
         $teste = array(
             "nome" => "wqwqwqw",
             "dateTime" => $dados['dateTime'],
