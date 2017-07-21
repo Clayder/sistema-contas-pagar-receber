@@ -3,19 +3,17 @@
  * Created by PhpStorm.
  * User: clayder
  * Date: 20/07/17
- * Time: 15:19
+ * Time: 21:25
  */
 
 namespace app\models;
 
-use app\database\Bd;
-
-class Cliente extends Model
+class Categoria extends Model
 {
     public function __construct()
     {
         parent::__construct();
-        $this->tabela = "cliente";
+        $this->tabela = "categoria";
     }
 
     /**
