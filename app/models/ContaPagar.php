@@ -101,12 +101,13 @@ class ContaPagar extends Model
         return $dados;
     }
 
+    /**
+     * @return string
+     */
     private function sqlSelect(){
         return "SELECT pagar.id, pagar.vencimento, pagar.descricao, pagar.valor, pagar.fkCliente, pagar.fkCategoria, pagar.pago, pagar.dateTime, cliente.nome as cliente, cliente.id as idCliente,categoria.nome as categoria, categoria.id as idCategoria  FROM pagar
                 LEFT JOIN cliente ON cliente.id = pagar.fkCliente
                 LEFT JOIN categoria ON categoria.id = pagar.fkCategoria";
-
-        // WHERE (date >= '$datainicialsql' AND date <= '$datafinalsql') ORDER BY date";
     }
 
 }
