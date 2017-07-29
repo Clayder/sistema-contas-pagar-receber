@@ -74,7 +74,7 @@ abstract class Controller
         $this->setScripFooter(inserirJs("datatables.net-buttons/js/buttons.print.min.js"));
         $this->setScripFooter(inserirJs("datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"));
         $this->setScripFooter(inserirJs("datatables.net-keytable/js/dataTables.keyTable.min.js"));
-        $this->setScripFooter(inserirJs("datatables.net-responsive/js/dataTables.responsive.min.js"));
+        //$this->setScripFooter(inserirJs("datatables.net-responsive/js/dataTables.responsive.min.js"));
         $this->setScripFooter(inserirJs("datatables.net-responsive-bs/js/responsive.bootstrap.js"));
         $this->setScripFooter(inserirJs("datatables.net-scroller/js/dataTables.scroller.min.js"));
         $this->setScripFooter(inserirJs("jszip/dist/jszip.min.js"));

@@ -24,6 +24,7 @@ class ContaReceber extends Controller
 	}
 
     public function cadastrar(){
+        $this->setScripFooter("<script src=\"".baseUrl("assets/js/formularios/formulario-conta.js")."\"></script> \n");
         $cliente = new Cliente();
         $dados['clientes'] = $cliente->getAll();
         $this->pagina("form-cadastrar-receber", $dados);
@@ -31,9 +32,9 @@ class ContaReceber extends Controller
 
     public function editar(){
         if(isset($_GET['id'])){
+            $this->setScripFooter("<script src=\"".baseUrl("assets/js/formularios/formulario-conta.js")."\"></script> \n");
             $id = (int)$_GET['id'];
             $cliente = new Cliente();
-            $categoria = new Categoria();
             $dados['clientes'] = $cliente->getAll();
             $dados['conta'] = $this->receber->get($id);
             $this->pagina("form-edit-receber", $dados);
@@ -48,7 +49,7 @@ class ContaReceber extends Controller
             $dados = array(
                 'dataRecebimento' => (isset($_POST['dataRecebimento'])) ? $_POST['dataRecebimento'] : "",
                 'descricao' => (isset($_POST['descricao'])) ? $_POST['descricao'] : "",
-                'valor' => (double)$valor,
+                'valor' => convertMonetario("double",(string)$valor),
                 'fk_cliente' => (isset($_POST['fk_cliente'])) ? $_POST['fk_cliente'] : 0,
                 'recebido' => (isset($_POST['recebido'])) ? $_POST['recebido'] : 0,
             );
@@ -85,7 +86,7 @@ class ContaReceber extends Controller
             $dados = array(
                 'dataRecebimento' => (isset($_POST['dataRecebimento'])) ? $_POST['dataRecebimento'] : "",
                 'descricao' => (isset($_POST['descricao'])) ? $_POST['descricao'] : "",
-                'valor' => (double)$valor,
+                'valor' => convertMonetario("double",(string)$valor),
                 'fk_cliente' => (isset($_POST['fk_cliente'])) ? $_POST['fk_cliente'] : 0,
                 'recebido' => (isset($_POST['recebido'])) ? $_POST['recebido'] : 0,
             );

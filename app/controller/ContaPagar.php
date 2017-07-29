@@ -42,6 +42,7 @@ class ContaPagar extends Controller
 
     public function editar(){
         if(isset($_GET['id'])){
+            $this->setScripFooter("<script src=\"".baseUrl("assets/js/formularios/formulario-conta.js")."\"></script> \n");
             $id = (int)$_GET['id'];
             $cliente = new Cliente();
             $categoria = new Categoria();
@@ -56,6 +57,7 @@ class ContaPagar extends Controller
     }
 
     public function cadastrar(){
+        $this->setScripFooter("<script src=\"".baseUrl("assets/js/formularios/formulario-conta.js")."\"></script> \n");
         $cliente = new Cliente();
         $categoria = new Categoria();
         $dados['clientes'] = $cliente->getAll();
@@ -69,7 +71,7 @@ class ContaPagar extends Controller
             $dados = array(
                 'vencimento' => (isset($_POST['vencimento'])) ? $_POST['vencimento'] : "",
                 'descricao' => (isset($_POST['descricao'])) ? $_POST['descricao'] : "",
-                'valor' => (double)$valor,
+                'valor' => convertMonetario("double",(string)$valor),
                 'fkCliente' => (isset($_POST['fkCliente'])) ? $_POST['fkCliente'] : 0,
                 'fkCategoria' => (isset($_POST['fkCategoria'])) ? $_POST['fkCategoria'] : 0,
                 'pago' => (isset($_POST['pago'])) ? $_POST['pago'] : 0,
@@ -91,17 +93,16 @@ class ContaPagar extends Controller
         if(requisicao() === "POST"){
             $id = (isset($_POST['id'])) ? $_POST['id'] : 0;
             $id = (int)$id;
-            
+
             $valor = (isset($_POST['valor'])) ? $_POST['valor'] : 0;
             $dados = array(
                 'vencimento' => (isset($_POST['vencimento'])) ? $_POST['vencimento'] : "",
                 'descricao' => (isset($_POST['descricao'])) ? $_POST['descricao'] : "",
-                'valor' => (double)$valor,
+                'valor' => convertMonetario("double",(string)$valor),
                 'fkCliente' => (isset($_POST['fkCliente'])) ? $_POST['fkCliente'] : 0,
                 'fkCategoria' => (isset($_POST['fkCategoria'])) ? $_POST['fkCategoria'] : 0,
                 'pago' => (isset($_POST['pago'])) ? $_POST['pago'] : 0,
             );
-            
             if($this->pagar->update($id, $dados)){
                 flashData("editarPagar", mensagemAlerta("success", "Conta editada com sucesso"));
             }else{

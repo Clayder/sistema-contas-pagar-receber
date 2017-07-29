@@ -21,6 +21,8 @@
      <!-- jQuery custom content scroller -->
     <script src="<?= baseUrl("bower_components/gentelella/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"); ?>"></script>
 
+     <script src="<?= baseUrl("assets/js/plugins/maskMoney.min.js"); ?>"></script>
+     
     <?php foreach ($arrayScriptFooter as $script): ?>
       <?php echo $script; ?>
     <?php endforeach; ?>

@@ -9,12 +9,12 @@
         </div>
         <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
             <span class="count_top"><i class="red"><i class="fa fa-minus"></i></i> <i class="fa fa-money"></i> Total de saída de dinheiro </span>
-            <div class="count red">R$ <?php echo ($somaValoresPagar == "")? 0 : $somaValoresPagar; ?></div>
+            <div class="count red">R$ <?php echo ($somaValoresPagar == "")? 0 : convertMonetario("monetario", $somaValoresPagar); ?></div>
             <span class="count_bottom"></span>
         </div>
         <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
             <span class="count_top"><i class="green"><i class="fa fa-plus"></i></i> <i class="fa fa-money"></i> Total de entrada de dinheiro</span>
-            <div class="count green">R$ <?php echo ($somaValoresReceber == "")? 0 : $somaValoresReceber; ?></div>
+            <div class="count green">R$ <?php echo ($somaValoresReceber == "")? 0 : convertMonetario("monetario", $somaValoresReceber); ?></div>
             <span class="count_bottom"></span>
         </div>
     </div>
