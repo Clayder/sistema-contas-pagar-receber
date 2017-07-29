@@ -1,0 +1,21 @@
+a.button-topo{
+	float: right;
+	background-color: #26B99A !important; 
+	color: #FFF !important;
+}
+
+a.button-topo-info{
+	float: right;
+	background-color: #5bc0de !important; 
+	color: #FFF !important;
+}
+
+table > tbody{
+	text-align: center;
+}
+
+body{
+	color: #333333 !important;
+}
+
+

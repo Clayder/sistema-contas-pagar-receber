@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-class ContaReceber extends Model
+class ContaReceber extends Conta
 {
     public function __construct()
     {
@@ -16,23 +16,28 @@ class ContaReceber extends Model
      */
     public function insert($arrayDados)
     {
-        try {
-            $sql = "INSERT INTO " . $this->tabela . " (dataRecebimento, descricao, valor, fk_cliente, recebido, dateTime) VALUES (:dataRecebimento, :descricao, :valor, :fk_cliente, :recebido, :dateTime);";
-            $sth = $this->pdo->prepare($sql);
-            $sth->bindValue(':dataRecebimento', $arrayDados['dataRecebimento']);
-            $sth->bindValue(':descricao', $arrayDados['descricao']);
-            $sth->bindValue(':valor', $arrayDados['valor']);
-            $sth->bindValue(':fk_cliente', $arrayDados['fk_cliente']);
-            $sth->bindValue(':recebido', $arrayDados['recebido']);
-            $sth->bindValue(':dateTime', $arrayDados['dateTime']);
-            $sth->execute();
-            if ($sth->rowCount() > 0) {
-                return true;
-            } else {
-                return false;
+        if(!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")){
+            return false;
+        }else{
+            $dateTime = dateTime();
+            try {
+                $sql = "INSERT INTO " . $this->tabela . " (dataRecebimento, descricao, valor, fk_cliente, recebido, dateTime) VALUES (:dataRecebimento, :descricao, :valor, :fk_cliente, :recebido, :dateTime);";
+                $sth = $this->pdo->prepare($sql);
+                $sth->bindValue(':dataRecebimento', $arrayDados['dataRecebimento']);
+                $sth->bindValue(':descricao', $arrayDados['descricao']);
+                $sth->bindValue(':valor', $arrayDados['valor']);
+                $sth->bindValue(':fk_cliente', $arrayDados['fk_cliente']);
+                $sth->bindValue(':recebido', $arrayDados['recebido']);
+                $sth->bindValue(':dateTime', $dateTime);
+                $sth->execute();
+                if ($sth->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (\PDOException $e) {
+                Bd::erro($e);
             }
-        } catch (\PDOException $e) {
-            Bd::erro($e);
         }
     }
 
@@ -43,41 +48,44 @@ class ContaReceber extends Model
      */
     public function update($id, $arrayDados)
     {
-        $dateTime = dateTime();
-        try {
-            $sql = "UPDATE " . $this->tabela . " SET dataRecebimento=?, descricao=?, valor=?, fk_cliente=?, recebido=?, dateTime=? WHERE id=?";
-            $sth = $this->pdo->prepare($sql);
-            $sth->bindValue(1, $arrayDados['dataRecebimento']);
-            $sth->bindValue(2, $arrayDados['descricao']);
-            $sth->bindValue(3, $arrayDados['valor']);
-            $sth->bindValue(4, $arrayDados['fk_cliente']);
-            $sth->bindValue(5, $arrayDados['recebido']);
-            $sth->bindValue(6, $dateTime);
-            $sth->bindValue(7, $id);
-            $sth->execute();
-            return true;
-        } catch (PDOException $erro) {
-            echo Bd::erro($erro);
+        if(!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")){
             return false;
+        }else{
+            $dateTime = dateTime();
+            try {
+                $sql = "UPDATE " . $this->tabela . " SET dataRecebimento=?, descricao=?, valor=?, fk_cliente=?, recebido=?, dateTime=? WHERE id=?";
+                $sth = $this->pdo->prepare($sql);
+                $sth->bindValue(1, $arrayDados['dataRecebimento']);
+                $sth->bindValue(2, $arrayDados['descricao']);
+                $sth->bindValue(3, $arrayDados['valor']);
+                $sth->bindValue(4, $arrayDados['fk_cliente']);
+                $sth->bindValue(5, $arrayDados['recebido']);
+                $sth->bindValue(6, $dateTime);
+                $sth->bindValue(7, $id);
+                $sth->execute();
+                return true;
+            } catch (PDOException $erro) {
+                echo Bd::erro($erro);
+                return false;
+            }
         }
     }
+
+    private function formValidacaoVencimento($dado){
+        if($dado === ""){
+            flashData("recebVencimentoValid", mensagemAlerta("danger", "Campo data de vencimento obrigatório."));
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * @return object
      */
     public function getAll()
     {
-        $dados = array();
-        try {
-            $sql = $this->sqlSelect();
-            $sql = $sql." ORDER BY dataRecebimento";
-            $stm = $this->pdo->prepare($sql);
-            $stm->execute();
-            $dados = $stm->fetchAll(\PDO::FETCH_OBJ);
-        } catch (PDOException $erro) {
-            self::erro($erro);
-        }
-        return $dados;
+        return $this->returnAll(" ORDER BY dataRecebimento");
     }
 
     /**
@@ -85,25 +93,48 @@ class ContaReceber extends Model
      * @return object
      */
     public function get($id){
-        $dados = array();
-        try {
-            $sql = $this->sqlSelect();
-            $sql = $sql .  " WHERE receber.id=?";
-            $stm = $this->pdo->prepare($sql);
-            $stm->bindValue(1, $id);
-            $stm->execute();
-            $dados = $stm->fetchAll(\PDO::FETCH_OBJ);
-        } catch (PDOException $erro) {
-            self::erro($erro);
-        }
-        return $dados;
+        return $this->getRow($id, " WHERE receber.id=?");
     }
 
     /**
      * @return string
      */
-    private function sqlSelect(){
+    public function sqlSelect(){
         return "SELECT receber.id, receber.dataRecebimento, receber.descricao, receber.valor, receber.fk_cliente, receber.recebido, receber.dateTime, cliente.nome as cliente, cliente.id as idCliente  FROM receber
                 LEFT JOIN cliente ON cliente.id = receber.fk_cliente";
+    }
+
+    /**
+     * Retorna as contas que vão vencer até daqui 30 dias
+     * @return array
+     */
+    public function contasReceber30Dias()
+    {
+        return $this->contas30Dias(" WHERE receber.dataRecebimento>=? AND receber.dataRecebimento<=? AND receber.recebido = 0");
+    }
+
+    public function graficoBarra($ano){
+        $where = "SELECT MONTH(receber.dataRecebimento) as mes, SUM(receber.valor) as total from receber
+                    WHERE YEAR(receber.dataRecebimento) = ? AND receber.recebido = 1
+                    GROUP BY MONTH(receber.dataRecebimento)
+                    ORDER BY receber.dataRecebimento ASC";
+        $dados = $this->getContaAno($ano, $where);
+        $meses = array();
+        $valores = array();
+        foreach($dados as $chave => $conteudo){
+            $meses[$conteudo->mes] = $conteudo->mes;
+            $valores[$conteudo->mes - 1] = $conteudo->total;
+        }
+        for($i = 1; $i <= 12; $i++){
+            if(!in_array($i, $meses)){
+                $valores[$i-1] = 0;
+            }
+        }
+        return $valores;
+    }
+
+    public function filtroData($dataInicio, $dataFim){
+        $where = " WHERE receber.dataRecebimento >=? AND receber.dataRecebimento <= ?";
+        return $this->filtroPorData($dataInicio, $dataFim, $where);
     }
 }

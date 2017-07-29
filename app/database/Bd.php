@@ -64,9 +64,9 @@ class Bd extends Driver
     /**
      * @return int
      */
-    public function countAll()
+    public function countAll($tabela)
     {
-        $find = $this->pdo->prepare('SELECT count(*) from vocabulario');
+        $find = $this->pdo->prepare('SELECT count(*) from '.$tabela);
         $find->execute();
         return $find->fetchColumn();
     }
@@ -88,5 +88,22 @@ class Bd extends Driver
             echo self::erro($erro);
             return false;
         }
+    }
+
+    public function sum($tabela, $coluna, $where = false){
+        if($where){
+            $query = $this->pdo->prepare("SELECT sum(".$coluna.") FROM pagar WHERE ". $where['campo'] ." = ?");
+            $query->bindValue(1, $where['busca']);
+        }else{
+            $query = $this->pdo->prepare("SELECT SUM(".$coluna.") FROM ".$tabela );
+        }
+        try{ 
+            $query->execute();   
+            $total = $query->fetch(PDO::FETCH_NUM);
+            $summ = $total[0]; // 0 is the first array. here array is only one.
+            return $summ; 
+        } catch(PDOException $e){
+            echo self::erro($erro);
+        } 
     }
 }

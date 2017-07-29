@@ -17,11 +17,17 @@
     <script src="<?= baseUrl("bower_components/gentelella/vendors/fastclick/lib/fastclick.js"); ?>"></script>
     <!-- NProgress -->
     <script src="<?= baseUrl("bower_components/gentelella/vendors/nprogress/nprogress.js"); ?>"></script>
-    <!-- Chart.js -->
-    <script src="<?= baseUrl("bower_components/gentelella/vendors/Chart.js/dist/Chart.min.js"); ?>"></script>
 
-    <!-- Custom Theme Scripts -->
+     <!-- jQuery custom content scroller -->
+    <script src="<?= baseUrl("bower_components/gentelella/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"); ?>"></script>
+
+    <?php foreach ($arrayScriptFooter as $script): ?>
+      <?php echo $script; ?>
+    <?php endforeach; ?>
+
+      <!-- Custom Theme Scripts -->
     <script src="<?= baseUrl("bower_components/gentelella/build/js/custom.min.js"); ?>"></script>
-	
+  
+
   </body>
 </html>

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-class ContaPagar extends Model
+class ContaPagar extends Conta
 {
     public function __construct()
     {
@@ -16,24 +16,29 @@ class ContaPagar extends Model
      */
     public function insert($arrayDados)
     {
-        try {
-            $sql = "INSERT INTO " . $this->tabela . " (vencimento, descricao, valor, fkCliente, fkCategoria, pago, dateTime) VALUES (:vencimento, :descricao, :valor, :fkCliente, :fkCategoria, :pago, :dateTime);";
-            $sth = $this->pdo->prepare($sql);
-            $sth->bindValue(':vencimento', $arrayDados['vencimento']);
-            $sth->bindValue(':descricao', $arrayDados['descricao']);
-            $sth->bindValue(':valor', $arrayDados['valor']);
-            $sth->bindValue(':fkCliente', $arrayDados['fkCliente']);
-            $sth->bindValue(':fkCategoria', $arrayDados['fkCategoria']);
-            $sth->bindValue(':pago', $arrayDados['pago']);
-            $sth->bindValue(':dateTime', $arrayDados['dateTime']);
-            $sth->execute();
-            if ($sth->rowCount() > 0) {
-                return true;
-            } else {
-                return false;
+        if (!$this->formValidacaoVencimento($arrayDados['vencimento']) || !$this->formValidacaoValor($arrayDados['valor'], "pagValorValid")) {
+            return false;
+        } else {
+            $dateTime = dateTime();
+            try {
+                $sql = "INSERT INTO " . $this->tabela . " (vencimento, descricao, valor, fkCliente, fkCategoria, pago, dateTime) VALUES (:vencimento, :descricao, :valor, :fkCliente, :fkCategoria, :pago, :dateTime);";
+                $sth = $this->pdo->prepare($sql);
+                $sth->bindValue(':vencimento', $arrayDados['vencimento']);
+                $sth->bindValue(':descricao', $arrayDados['descricao']);
+                $sth->bindValue(':valor', $arrayDados['valor']);
+                $sth->bindValue(':fkCliente', $arrayDados['fkCliente']);
+                $sth->bindValue(':fkCategoria', $arrayDados['fkCategoria']);
+                $sth->bindValue(':pago', $arrayDados['pago']);
+                $sth->bindValue(':dateTime', $dateTime);
+                $sth->execute();
+                if ($sth->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (\PDOException $e) {
+                Bd::erro($e);
             }
-        } catch (\PDOException $e) {
-            Bd::erro($e);
         }
     }
 
@@ -44,24 +49,38 @@ class ContaPagar extends Model
      */
     public function update($id, $dados)
     {
-        $dateTime = dateTime();
-        try {
-            $sql = "UPDATE " . $this->tabela . " SET vencimento=?, descricao=?, valor=?, fkCliente=?, fkCategoria=?, pago=?, dateTime=? WHERE id=?";
-            $stm = $this->pdo->prepare($sql);
-            $stm->bindValue(1, $dados['vencimento']);
-            $stm->bindValue(2, $dados['descricao']);
-            $stm->bindValue(3, $dados['valor']);
-            $stm->bindValue(4, $dados['fkCliente']);
-            $stm->bindValue(5, $dados['fkCategoria']);
-            $stm->bindValue(6, $dados['pago']);
-            $stm->bindValue(7, $dateTime);
-            $stm->bindValue(8, $id);
-            $stm->execute();
-            return true;
-        } catch (PDOException $erro) {
-            echo Bd::erro($erro);
+        if (!$this->formValidacaoVencimento($dados['vencimento']) || !$this->formValidacaoValor($dados['valor'], "pagValorValid")) {
+            return false;
+        } else {
+            $dateTime = dateTime();
+            try {
+                $sql = "UPDATE " . $this->tabela . " SET vencimento=?, descricao=?, valor=?, fkCliente=?, fkCategoria=?, pago=?, dateTime=? WHERE id=?";
+                $stm = $this->pdo->prepare($sql);
+                $stm->bindValue(1, $dados['vencimento']);
+                $stm->bindValue(2, $dados['descricao']);
+                $stm->bindValue(3, $dados['valor']);
+                $stm->bindValue(4, $dados['fkCliente']);
+                $stm->bindValue(5, $dados['fkCategoria']);
+                $stm->bindValue(6, $dados['pago']);
+                $stm->bindValue(7, $dateTime);
+                $stm->bindValue(8, $id);
+                $stm->execute();
+                return true;
+            } catch (PDOException $erro) {
+                echo Bd::erro($erro);
+                return false;
+            }
+        }
+
+    }
+
+    private function formValidacaoVencimento($dado)
+    {
+        if ($dado === "") {
+            flashData("pagVencimentoValid", mensagemAlerta("danger", "Campo vencimento obrigatório."));
             return false;
         }
+        return true;
     }
 
     /**
@@ -69,45 +88,63 @@ class ContaPagar extends Model
      */
     public function getAll()
     {
-        $dados = array();
-        try {
-            $sql = $this->sqlSelect();
-            $sql = $sql." ORDER BY vencimento";
-            $stm = $this->pdo->prepare($sql);
-            $stm->execute();
-            $dados = $stm->fetchAll(\PDO::FETCH_OBJ);
-        } catch (PDOException $erro) {
-            self::erro($erro);
-        }
-        return $dados;
+        return $this->returnAll(" ORDER BY vencimento");
     }
 
     /**
      * @param int $id
      * @return object
      */
-    public function get($id){
-        $dados = array();
-        try {
-            $sql = $this->sqlSelect();
-            $sql = $sql .  " WHERE pagar.id=?";
-            $stm = $this->pdo->prepare($sql);
-            $stm->bindValue(1, $id);
-            $stm->execute();
-            $dados = $stm->fetchAll(\PDO::FETCH_OBJ);
-        } catch (PDOException $erro) {
-            self::erro($erro);
-        }
-        return $dados;
+    public function get($id)
+    {
+        return $this->getRow($id, " WHERE pagar.id=?");
     }
 
     /**
      * @return string
      */
-    private function sqlSelect(){
+    public function sqlSelect()
+    {
         return "SELECT pagar.id, pagar.vencimento, pagar.descricao, pagar.valor, pagar.fkCliente, pagar.fkCategoria, pagar.pago, pagar.dateTime, cliente.nome as cliente, cliente.id as idCliente,categoria.nome as categoria, categoria.id as idCategoria  FROM pagar
                 LEFT JOIN cliente ON cliente.id = pagar.fkCliente
                 LEFT JOIN categoria ON categoria.id = pagar.fkCategoria";
     }
 
+    
+
+    /**
+     * Retorna as contas que vão vencer até daqui 30 dias
+     * @return array
+     */
+    public function contasPagar30Dias()
+    {
+        return $this->contas30Dias(" WHERE pagar.vencimento>=? AND pagar.vencimento<=? AND pagar.pago = 0");
+    }
+
+    public function graficoBarra($ano){
+        $where = "SELECT MONTH(pagar.vencimento) as mes, SUM(pagar.valor) as total from pagar
+                    WHERE YEAR(pagar.vencimento) = ? AND pagar.pago = 1
+                    GROUP BY MONTH(pagar.vencimento)
+                    ORDER BY pagar.vencimento ASC";
+        $dados = $this->getContaAno($ano, $where);
+        $meses = array();
+        $valores = array();
+        // Não existe mês zero
+        $valores[0] = 0;
+        foreach($dados as $chave => $conteudo){
+            $meses[$conteudo->mes] = $conteudo->mes;
+            $valores[$conteudo->mes -1] = $conteudo->total;
+        }
+        for($i = 1; $i <= 12; $i++){
+            if(!in_array($i, $meses)){
+                $valores[$i-1] = 0;
+            }
+        }
+        return $valores;
+    }
+
+    public function filtroData($dataInicio, $dataFim){
+        $where = " WHERE pagar.vencimento >=? AND pagar.vencimento <= ?";
+        return $this->filtroPorData($dataInicio, $dataFim, $where);
+    }
 }
