@@ -13,12 +13,30 @@ use app\models\ContaReceber as Receber;
  */
 class Home extends Controller
 {
+
+	/**
+	 * @var ContaPagar
+	 */
+	private $pagar;
+
+	/**
+	 * @var Cliente 
+	 */
+	private $cliente;
+
+	/**
+	 * @param ContaReceber
+	 */
+	private $receber;
+
     /**
      * Home constructor.
      */
 	public function __construct(){
 		parent::__construct();
 		$this->pasta = "home";
+		$this->pagar = new Pagar();
+        $this->receber = new Receber();
 	}
 
     /**
@@ -26,14 +44,12 @@ class Home extends Controller
      * @return void
      */
 	public function index(){
-		$cliente = new Cliente();
-		$pagar = new Pagar();
-		$receber = new Receber();
-		$dados['qtdClientes'] = $cliente->qtdClientes();
-		$dados['somaValoresPagar'] = $pagar->somarValores();
-		$dados['somaValoresReceber'] = $receber->somarValores();
-		$dados['contas'] = $pagar->contasPagar30Dias();
-		$dados['contasReceber'] = $receber->contasReceber30Dias();
+		$this->cliente = new Cliente();
+		$dados['qtdClientes'] = $this->cliente->qtdClientes();
+		$dados['somaValoresPagar'] = $this->pagar->somarValores();
+		$dados['somaValoresReceber'] = $this->receber->somarValores();
+		$dados['contas'] = $this->pagar->contasPagar30Dias();
+		$dados['contasReceber'] = $this->receber->contasReceber30Dias();
 
 		$this->carregarCss();
 		$this->carregarJs();
@@ -45,11 +61,9 @@ class Home extends Controller
      * @return void
      */
 	public function graficoBarra(){
-        $pagar = new Pagar();
-        $receber = new Receber();
         $anoAtual = dateTime("Y");
-        $grafico['pagar'] = $pagar->graficoBarra($anoAtual);
-        $grafico['receber'] = $receber->graficoBarra($anoAtual);
+        $grafico['pagar'] = $this->pagar->graficoBarra($anoAtual);
+        $grafico['receber'] = $this->receber->graficoBarra($anoAtual);
         echo json_encode($grafico);
     }
 

@@ -54,7 +54,7 @@ class ContaPagar extends Conta
 
     /**
      * @param int $id
-     * @param string $nome
+     * @param array $dados
      * @return bool
      */
     public function update($id, $dados)

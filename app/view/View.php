@@ -11,7 +11,10 @@ namespace app\view;
 class View
 {
     /**
+     * Insere o arquivo da view.
      * @param string $view
+     * @param array $arrayDados
+     * @return void
      */
     private function inserir($view, $arrayDados = array())
     {
@@ -30,6 +33,8 @@ class View
 
     /**
      * Insere o conteúdo do corpo da view. O conteúdo principal.
+     * @param string $view
+     * @param array $dados
      * @return void
      */
     public function principal($view, $dados)
@@ -38,6 +43,7 @@ class View
     }
 
     /**
+     * @param string $script
      * @return void
      */
     public function footer($script)
@@ -47,6 +53,7 @@ class View
     }
 
     /**
+     * @param string $script
      * @return void
      */
     public function header($script)

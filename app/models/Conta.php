@@ -44,6 +44,7 @@ abstract class Conta extends Model
 
     /**
      * Retorna as contas que vão vencer até daqui 30 dias.
+     * @param  string $where 
      * @return array
      */
     protected function contas30Dias($where)
@@ -71,7 +72,7 @@ abstract class Conta extends Model
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return bool
      */
     public function efetuarPagamento($id)

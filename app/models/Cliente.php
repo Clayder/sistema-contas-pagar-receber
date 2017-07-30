@@ -96,7 +96,7 @@ class Cliente extends Model
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return object
      */
     public function getClientePagar($id)

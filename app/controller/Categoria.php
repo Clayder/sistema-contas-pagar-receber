@@ -13,6 +13,12 @@ use app\models\Categoria as CategoriaModel;
  */
 class Categoria extends Controller
 {
+
+    /**
+     * @var Categoria
+     */
+    private $categoria;
+
     /**
      * Categoria constructor.
      */
@@ -20,6 +26,7 @@ class Categoria extends Controller
     {
         parent::__construct();
         $this->pasta = "categoria";
+        $this->categoria = new CategoriaModel();
     }
 
     /**
@@ -30,8 +37,7 @@ class Categoria extends Controller
     {
         $this->carregarCss();
         $this->carregarJs();
-        $categorias = new CategoriaModel();
-        $dados['categorias'] = $categorias->getAll();
+        $dados['categorias'] = $this->categoria->getAll();
         $this->pagina("categorias", $dados);
     }
 
@@ -41,8 +47,7 @@ class Categoria extends Controller
      */
     public function graficoPizza()
     {
-        $categorias = new CategoriaModel();
-        echo json_encode($categorias->graficoPizza());
+        echo json_encode($this->categoria->graficoPizza());
     }
 
     /**
@@ -54,8 +59,7 @@ class Categoria extends Controller
         if (requisicao() === "POST") {
             $id = (isset($_POST['id'])) ? $_POST['id'] : 0;
             $id = (int)$id;
-            $categoria = new CategoriaModel();
-            if ($categoria->delete($id)) {
+            if ($this->categoria->delete($id)) {
                 flashData("excluirCategoria", mensagemAlerta("success", "Categoria excluída com sucesso"));
             } else {
                 flashData("excluirCategoria", mensagemAlerta("danger", "Categoria não foi excluído"));
@@ -75,8 +79,7 @@ class Categoria extends Controller
     {
         if (isset($_GET['id'])) {
             $id = (int)$_GET['id'];
-            $categoria = new categoriaModel();
-            $dados['categoria'] = $categoria->get($id);
+            $dados['categoria'] = $this->categoria->get($id);
             $this->pagina("form-edit-categoria", $dados);
         } else {
             redirect("categoria", "index");
@@ -101,12 +104,11 @@ class Categoria extends Controller
     {
         if (isset($_POST['nome'])) {
             $nome = $_POST['nome'];
-            $categoria = new categoriaModel();
             $dados = array(
                 'nome' => $nome,
                 'dateTime' => dateTime()
             );
-            if ($categoria->insert($dados)) {
+            if ($this->categoria->insert($dados)) {
                 flashData("cadastrarCategoria", mensagemAlerta("success", "Categoria cadastrado com sucesso."));
             } else {
                 flashData("cadastrarCategoria", mensagemAlerta("danger", "Categoria não foi cadastrada."));
@@ -128,8 +130,7 @@ class Categoria extends Controller
             $id = (int)$id;
             if (isset($_POST['nome'])) {
                 $nome = $_POST['nome'];
-                $categoria = new CategoriaModel();
-                if ($categoria->update($id, $nome)) {
+                if ($this->categoria->update($id, $nome)) {
                     flashData("editarCategoria", mensagemAlerta("success", "Categoria editada com sucesso."));
                 } else {
                     flashData("editarCategoria", mensagemAlerta("danger", "Categoria não foi editada."));

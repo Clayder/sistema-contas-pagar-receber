@@ -3,5 +3,8 @@
     "psr-4": {
       "app\\": "app/"
     }
+  },
+  "require-dev": {
+    "apigen/apigen": "^4.1"
   }
 }

@@ -50,7 +50,7 @@ class Bd extends Driver
     }
 
     /**
-     * @param string $id
+     * @param string $tabela
      * @param array $where array('campo' => id, 'busca' => 1)
      * @return object
      */
@@ -75,6 +75,7 @@ class Bd extends Driver
 
     /**
      * Conta a quantidade de elementos de uma tabela.
+     * @param  String
      * @return int
      */
     public function countAll($tabela)

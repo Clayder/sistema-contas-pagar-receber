@@ -34,7 +34,7 @@
                   <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                     <a href="<?= url("categoria", "index"); ?>" class="btn btn-danger" type="button">Cancelar</a>
                     <button class="btn btn-warning" type="reset">Resetar</button>
-                    <button type="submit" class="btn btn-success">Editar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
                   </div>
                 </div>
               </form>

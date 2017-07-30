@@ -13,6 +13,12 @@ use app\models\Cliente as ClienteModel;
  */
 class Cliente extends Controller
 {
+
+    /**
+     * @var Cliente
+     */
+    private $cliente;
+
     /**
      * Cliente constructor.
      */
@@ -20,6 +26,7 @@ class Cliente extends Controller
     {
         parent::__construct();
         $this->pasta = "cliente";
+        $this->cliente = new ClienteModel();
     }
 
     /**
@@ -30,8 +37,7 @@ class Cliente extends Controller
     {
         $this->carregarCss();
         $this->carregarJs();
-        $cliente = new ClienteModel();
-        $dados['clientes'] = $cliente->getAll();
+        $dados['clientes'] = $this->cliente->getAll();
         $this->pagina("clientes", $dados);
     }
 
@@ -44,8 +50,7 @@ class Cliente extends Controller
         if (requisicao() === "POST") {
             $id = (isset($_POST['id'])) ? $_POST['id'] : 0;
             $id = (int)$id;
-            $cliente = new ClienteModel();
-            if ($cliente->delete($id)) {
+            if ($this->cliente->delete($id)) {
                 flashData("excluirCliente", mensagemAlerta("success", "Cliente excluído com sucesso"));
             } else {
                 flashData("excluirCliente", mensagemAlerta("danger", "Cliente não foi excluído"));
@@ -65,8 +70,7 @@ class Cliente extends Controller
     {
         if (isset($_GET['id'])) {
             $id = (int)$_GET['id'];
-            $cliente = new ClienteModel();
-            $dados['cliente'] = $cliente->get($id);
+            $dados['cliente'] = $this->cliente->get($id);
             $this->pagina("form-edit-cliente", $dados);
         } else {
             redirect("cliente", "index");
@@ -91,12 +95,11 @@ class Cliente extends Controller
     {
         if (isset($_POST['nome'])) {
             $nome = $_POST['nome'];
-            $cliente = new ClienteModel();
             $dados = array(
                 'nome' => $nome,
                 'dateTime' => dateTime()
             );
-            if ($cliente->insert($dados)) {
+            if ($this->cliente->insert($dados)) {
                 flashData("cadastrarCliente", mensagemAlerta("success", "Cliente cadastrado com sucesso"));
             } else {
                 flashData("cadastrarCliente", mensagemAlerta("danger", "Cliente não foi cadastrado"));
@@ -120,8 +123,7 @@ class Cliente extends Controller
             $id = (int)$id;
             if (isset($_POST['nome'])) {
                 $nome = $_POST['nome'];
-                $cliente = new ClienteModel();
-                if ($cliente->update($id, $nome)) {
+                if ($this->cliente->update($id, $nome)) {
                     flashData("editarCliente", mensagemAlerta("success", "Cliente editado com sucesso"));
                 } else {
                     flashData("editarCliente", mensagemAlerta("danger", "Cliente não foi editado"));

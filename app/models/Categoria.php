@@ -93,7 +93,7 @@ class Categoria extends Model
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return object
      */
     public function getCategoriaPagar($id){
