@@ -1,9 +1,19 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 
 namespace app\models;
 
+/**
+ * Class ContaReceber
+ * @package app\models
+ */
 class ContaReceber extends Conta
 {
+    /**
+     * ContaReceber constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -16,9 +26,9 @@ class ContaReceber extends Conta
      */
     public function insert($arrayDados)
     {
-        if(!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")){
+        if (!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")) {
             return false;
-        }else{
+        } else {
             $dateTime = dateTime();
             try {
                 $sql = "INSERT INTO " . $this->tabela . " (dataRecebimento, descricao, valor, fk_cliente, recebido, dateTime) VALUES (:dataRecebimento, :descricao, :valor, :fk_cliente, :recebido, :dateTime);";
@@ -43,14 +53,14 @@ class ContaReceber extends Conta
 
     /**
      * @param int $id
-     * @param string $nome
+     * @param array $arrayDados
      * @return bool
      */
     public function update($id, $arrayDados)
     {
-        if(!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")){
+        if (!$this->formValidacaoVencimento($arrayDados['dataRecebimento']) || !$this->formValidacaoValor($arrayDados['valor'], "recebValorValid")) {
             return false;
-        }else{
+        } else {
             $dateTime = dateTime();
             try {
                 $sql = "UPDATE " . $this->tabela . " SET dataRecebimento=?, descricao=?, valor=?, fk_cliente=?, recebido=?, dateTime=? WHERE id=?";
@@ -71,14 +81,18 @@ class ContaReceber extends Conta
         }
     }
 
-    private function formValidacaoVencimento($dado){
-        if($dado === ""){
+    /**
+     * @param string $dado
+     * @return bool
+     */
+    private function formValidacaoVencimento($dado)
+    {
+        if ($dado === "") {
             flashData("recebVencimentoValid", mensagemAlerta("danger", "Campo data de vencimento obrigatório."));
             return false;
         }
         return true;
     }
-
 
     /**
      * @return object
@@ -92,14 +106,16 @@ class ContaReceber extends Conta
      * @param int $id
      * @return object
      */
-    public function get($id){
+    public function get($id)
+    {
         return $this->getRow($id, " WHERE receber.id=?");
     }
 
     /**
      * @return string
      */
-    public function sqlSelect(){
+    public function sqlSelect()
+    {
         return "SELECT receber.id, receber.dataRecebimento, receber.descricao, receber.valor, receber.fk_cliente, receber.recebido, receber.dateTime, cliente.nome as cliente, cliente.id as idCliente  FROM receber
                 LEFT JOIN cliente ON cliente.id = receber.fk_cliente";
     }
@@ -113,7 +129,12 @@ class ContaReceber extends Conta
         return $this->contas30Dias(" WHERE receber.dataRecebimento>=? AND receber.dataRecebimento<=? AND receber.recebido = 0");
     }
 
-    public function graficoBarra($ano){
+    /**
+     * @param int $ano
+     * @return array
+     */
+    public function graficoBarra($ano)
+    {
         $where = "SELECT MONTH(receber.dataRecebimento) as mes, SUM(receber.valor) as total from receber
                     WHERE YEAR(receber.dataRecebimento) = ? AND receber.recebido = 1
                     GROUP BY MONTH(receber.dataRecebimento)
@@ -121,19 +142,25 @@ class ContaReceber extends Conta
         $dados = $this->getContaAno($ano, $where);
         $meses = array();
         $valores = array();
-        foreach($dados as $chave => $conteudo){
+        foreach ($dados as $chave => $conteudo) {
             $meses[$conteudo->mes] = $conteudo->mes;
             $valores[$conteudo->mes - 1] = $conteudo->total;
         }
-        for($i = 1; $i <= 12; $i++){
-            if(!in_array($i, $meses)){
-                $valores[$i-1] = 0;
+        for ($i = 1; $i <= 12; $i++) {
+            if (!in_array($i, $meses)) {
+                $valores[$i - 1] = 0;
             }
         }
         return $valores;
     }
 
-    public function filtroData($dataInicio, $dataFim){
+    /**
+     * @param date $dataInicio
+     * @param date $dataFim
+     * @return array
+     */
+    public function filtroData($dataInicio, $dataFim)
+    {
         $where = " WHERE receber.dataRecebimento >=? AND receber.dataRecebimento <= ?";
         return $this->filtroPorData($dataInicio, $dataFim, $where);
     }

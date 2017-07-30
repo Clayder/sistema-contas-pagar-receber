@@ -1,17 +1,30 @@
-<?php 
-
+<?php
+/**
+ * @author Peter Clayder
+ */
 namespace app\controller;
 use app\models\Cliente;
 use app\models\ContaPagar as Pagar;
 use app\models\ContaReceber as Receber;
 
+/**
+ * Class Home
+ * @package app\controller
+ */
 class Home extends Controller
 {
+    /**
+     * Home constructor.
+     */
 	public function __construct(){
 		parent::__construct();
 		$this->pasta = "home";
 	}
 
+    /**
+     * Página home
+     * @return void
+     */
 	public function index(){
 		$cliente = new Cliente();
 		$pagar = new Pagar();
@@ -27,6 +40,10 @@ class Home extends Controller
 		$this->pagina("home", $dados);
 	}
 
+    /**
+     * Método utilizado como API para gerar o gŕafico de barra. Requisição via GET.
+     * @return void
+     */
 	public function graficoBarra(){
         $pagar = new Pagar();
         $receber = new Receber();
@@ -35,12 +52,19 @@ class Home extends Controller
         $grafico['receber'] = $receber->graficoBarra($anoAtual);
         echo json_encode($grafico);
     }
+
+    /**
+     * @return void
+     */
 	public function carregarCss(){
         $this->setScripHeader(inserirCss("bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css"));
         $this->setScripHeader(inserirCss("jqvmap/dist/jqvmap.min.css"));
         $this->setScripHeader(inserirCss("bootstrap-daterangepicker/daterangepicker.css"));
     }
 
+    /**
+     * @return void
+     */
     public function carregarJs(){
         $this->setScripFooter("<script src=\"".baseUrl("assets/js/graficos/grafico-barra.js")."\"></script> \n");
         $this->setScripFooter("<script src=\"".baseUrl("assets/js/graficos/grafico-pizza.js")."\"></script> \n");

@@ -1,16 +1,19 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: clayder
- * Date: 20/07/17
- * Time: 21:25
+ * @author Peter Clayder
  */
-
 namespace app\models;
 use app\database\Bd;
 
+/**
+ * Class Categoria
+ * @package app\models
+ */
 class Categoria extends Model
 {
+    /**
+     * Categoria constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -71,6 +74,10 @@ class Categoria extends Model
         }
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function delete($id){
 
         // verifica se a Categoria é chave estrangeira da tabela pagar
@@ -85,6 +92,10 @@ class Categoria extends Model
         
     }
 
+    /**
+     * @param $id
+     * @return object
+     */
     public function getCategoriaPagar($id){
         return $this->bd->get("pagar", array('campo' => "fkCategoria", 'busca' => $id));
     }
@@ -110,6 +121,10 @@ class Categoria extends Model
         return $dados;
     }
 
+    /**
+     * Cria o gráfico de pizza.
+     * @return array
+     */
     public function graficoPizza(){
         $categorias = $this->totalValorPgCategoria();
         $setores = array();

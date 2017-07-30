@@ -1,12 +1,20 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 
 namespace app\view;
+/**
+ * Class View
+ * @package app\view
+ */
 class View
 {
-	/**
+    /**
      * @param string $view
-    */
-    private function inserir($view, $arrayDados = array()){
+     */
+    private function inserir($view, $arrayDados = array())
+    {
         /*
          * Transforma cada chave do array em uma variÃ¡vel
          * $dados = array(
@@ -16,60 +24,67 @@ class View
          * Cria as variaveis $titulo e $conteudo
         */
         extract($arrayDados);
-        
-       include PASTA_BASE_VIEW.$view.".php";
+
+        include PASTA_BASE_VIEW . $view . ".php";
     }
 
     /**
      * Insere o conteúdo do corpo da view. O conteúdo principal.
      * @return void
      */
-    public function principal($view, $dados){
-        $this->inserir("principal/".$view, $dados);
+    public function principal($view, $dados)
+    {
+        $this->inserir("principal/" . $view, $dados);
     }
 
     /**
      * @return void
      */
-    public function footer($script){
+    public function footer($script)
+    {
         $dados['arrayScriptFooter'] = $script;
-    	$this->inserir("componente/footer", $dados);
+        $this->inserir("componente/footer", $dados);
     }
 
     /**
      * @return void
      */
-    public function header($script){
+    public function header($script)
+    {
         $dados['arrayScript'] = $script;
-    	$this->inserir("componente/header", $dados);
+        $this->inserir("componente/header", $dados);
     }
 
     /**
      * @return void
      */
-    public function menuFooter(){
-    	$this->inserir("componente/menu-footer");
+    public function menuFooter()
+    {
+        $this->inserir("componente/menu-footer");
     }
 
     /**
      * @return void
      */
-    public function menuProfile(){
-    	$this->inserir("componente/menu-profile");
+    public function menuProfile()
+    {
+        $this->inserir("componente/menu-profile");
     }
 
     /**
      * @return void
      */
-    public function sideBar(){
-    	$this->inserir("componente/sidebar");
+    public function sideBar()
+    {
+        $this->inserir("componente/sidebar");
     }
 
     /**
      * @return void
      */
-    public function topNavigation(){
-    	$this->inserir("componente/top-navigation");
+    public function topNavigation()
+    {
+        $this->inserir("componente/top-navigation");
     }
 
     /**
@@ -77,6 +92,6 @@ class View
      */
     public static function erro404()
     {
-        include PASTA_BASE_VIEW."error/page_404".".php";
+        include PASTA_BASE_VIEW . "error/page_404" . ".php";
     }
 }

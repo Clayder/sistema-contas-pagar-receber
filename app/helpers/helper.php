@@ -1,5 +1,9 @@
 <?php
 /**
+ * Arquivo utilizado para armazenar as funções auxiliares do sistema.
+ */
+
+/**
  * @param string $url
  * @return string
  */
@@ -30,7 +34,7 @@ function dateTime($tipo = "")
 }
 
 /**
- * Converte a data para o formato brasileiro
+ * Converte a data para o formato brasileiro.
  * @param date $data
  * @return string
  */
@@ -41,7 +45,7 @@ function dataBrasil($data)
 }
 
 /**
- * Converte a data e hora para o formato brasileiro
+ * Converte a data e hora para o formato brasileiro.
  * @param dateTime $data
  * @return string
  */
@@ -52,7 +56,7 @@ function dateTimeBrasil($data)
 }
 
 /**
- * Converte a data do formato brasileiro para o americano
+ * Converte a data do formato brasileiro para o americano.
  * @param date $data
  * @param string $tipo
  * @return string
@@ -64,7 +68,7 @@ function dateTimeSql($data, $tipo)
 }
 
 /**
- * Insere CSS na tag <link></link>
+ * Insere CSS na tag <link></link> .
  * @param string $css
  * @return string
  */
@@ -74,7 +78,7 @@ function inserirCss($css)
 }
 
 /**
- * Insere o JS dentro da tag <script></script>
+ * Insere o JS dentro da tag <script></script> .
  * @param string $js
  * @return string
  */
@@ -91,7 +95,7 @@ function pre($array = null)
 }
 
 /**
- * Cria um button para deletar
+ * Cria um button para deletar.
  * @param string $class
  * @param string $metodo
  * @param inf $id
@@ -142,7 +146,7 @@ function urlAmigavel($class, $metodo)
 }
 
 /**
- * Retorna o tipo de requisição (GET, POST, etc)
+ * Retorna o tipo de requisição (GET, POST, etc).
  * @return mixed
  */
 function requisicao()
@@ -151,7 +155,7 @@ function requisicao()
 }
 
 /**
- * Redireciona o usuário para uma outra página
+ * Redireciona o usuário para uma outra página.
  * @param string $class
  * @param string $metodo
  * @param string $parametro
@@ -198,7 +202,7 @@ function flashDataVerifica()
 }
 
 /**
- * Imprime a mensagem
+ * Imprime a mensagem.
  * @param string $nomeSession
  */
 function flashDataMs($nomeSession)

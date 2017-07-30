@@ -1,17 +1,28 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 
 namespace app\database;
 
 use \PDO;
 
+/**
+ * Class Bd
+ * @package app\database
+ */
 class Bd extends Driver
 {
+    /**
+     * Bd constructor.
+     */
     public function __construct()
     {
         $this->connect();
     }
 
     /**
+     * Retorna um array de objetos com todos os registros da tabela.
      * @param string $tabela
      * @return object
      */
@@ -31,6 +42,7 @@ class Bd extends Driver
 
     /**
      * @param \PDOException $erro
+     * @return void
      */
     public static function erro($erro)
     {
@@ -62,16 +74,18 @@ class Bd extends Driver
     }
 
     /**
+     * Conta a quantidade de elementos de uma tabela.
      * @return int
      */
     public function countAll($tabela)
     {
-        $find = $this->pdo->prepare('SELECT count(*) from '.$tabela);
+        $find = $this->pdo->prepare('SELECT count(*) from ' . $tabela);
         $find->execute();
         return $find->fetchColumn();
     }
 
     /**
+     * Excluí uma linha específica da tabela.
      * @param string $tabela
      * @param array $where array('campo' => id, 'busca' => 1)
      * @return boolean
@@ -90,20 +104,28 @@ class Bd extends Driver
         }
     }
 
-    public function sum($tabela, $coluna, $where = false){
-        if($where){
-            $query = $this->pdo->prepare("SELECT sum(".$coluna.") FROM pagar WHERE ". $where['campo'] ." = ?");
+    /**
+     * Soma todos os elementos de uma coluna da tabela.
+     * @param string $tabela
+     * @param string $coluna
+     * @param array $where array('busca'=> 1, 'campo'=> 'id')
+     * @return mixed
+     */
+    public function sum($tabela, $coluna, $where = array())
+    {
+        if ($where) {
+            $query = $this->pdo->prepare("SELECT sum(" . $coluna . ") FROM pagar WHERE " . $where['campo'] . " = ?");
             $query->bindValue(1, $where['busca']);
-        }else{
-            $query = $this->pdo->prepare("SELECT SUM(".$coluna.") FROM ".$tabela );
+        } else {
+            $query = $this->pdo->prepare("SELECT SUM(" . $coluna . ") FROM " . $tabela);
         }
-        try{ 
-            $query->execute();   
+        try {
+            $query->execute();
             $total = $query->fetch(PDO::FETCH_NUM);
             $summ = $total[0]; // 0 is the first array. here array is only one.
-            return $summ; 
-        } catch(PDOException $e){
+            return $summ;
+        } catch (PDOException $e) {
             echo self::erro($erro);
-        } 
+        }
     }
 }

@@ -1,29 +1,49 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 
 namespace app\models;
 
+/**
+ * Class Conta
+ * @package app\models
+ */
 abstract class Conta extends Model
 {
+    /**
+     * Conta constructor.
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    protected function formValidacaoValor($dado, $idFlashData){
-        if($dado === "" || $dado <= 0){
+    /**
+     * @param string $dado
+     * @param int $idFlashData
+     * @return bool
+     */
+    protected function formValidacaoValor($dado, $idFlashData)
+    {
+        if ($dado === "" || $dado <= 0) {
             flashData($idFlashData, mensagemAlerta("danger", "Campo valor obrigatório."));
             return false;
         }
         return true;
     }
 
+    /**
+     * Soma os valores da coluna valor.
+     * @return mixed
+     */
     public function somarValores()
     {
         return $this->bd->sum($this->tabela, "valor");
     }
 
     /**
-     * Retorna as contas que vão vencer até daqui 30 dias
+     * Retorna as contas que vão vencer até daqui 30 dias.
      * @return array
      */
     protected function contas30Dias($where)
@@ -50,16 +70,20 @@ abstract class Conta extends Model
         return $dados;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function efetuarPagamento($id)
     {
-    	if($this->tabela === "pagar"){
-    		$campo = "pago";
-    	}else{
-    		$campo = "recebido";
-    	}
+        if ($this->tabela === "pagar") {
+            $campo = "pago";
+        } else {
+            $campo = "recebido";
+        }
         $dateTime = dateTime();
         try {
-            $sql = "UPDATE " . $this->tabela . " SET ".$campo."=1, dateTime=? WHERE id=?";
+            $sql = "UPDATE " . $this->tabela . " SET " . $campo . "=1, dateTime=? WHERE id=?";
             $stm = $this->pdo->prepare($sql);
             $stm->bindValue(1, $dateTime);
             $stm->bindValue(2, $id);
@@ -71,7 +95,13 @@ abstract class Conta extends Model
         }
     }
 
-    protected function getContaAno($ano, $where){
+    /**
+     * @param int $ano
+     * @param string $where
+     * @return array
+     */
+    protected function getContaAno($ano, $where)
+    {
         $dados = array();
         try {
             $stm = $this->pdo->prepare($where);
@@ -84,7 +114,14 @@ abstract class Conta extends Model
         return $dados;
     }
 
-    protected function filtroPorData($dataInicio, $dataFim, $where){
+    /**
+     * @param date $dataInicio
+     * @param date $dataFim
+     * @param string $where
+     * @return array
+     */
+    protected function filtroPorData($dataInicio, $dataFim, $where)
+    {
         $dados = array();
         try {
             $sql = $this->sqlSelect();
@@ -101,7 +138,8 @@ abstract class Conta extends Model
     }
 
     /**
-     * @return object
+     * @param string $where
+     * @return array
      */
     protected function returnAll($where)
     {
@@ -120,7 +158,8 @@ abstract class Conta extends Model
 
     /**
      * @param int $id
-     * @return object
+     * @param string $where
+     * @return array
      */
     public function getRow($id, $where)
     {

@@ -1,7 +1,14 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 namespace app\models;
 use app\database\Bd;
 
+/**
+ * Class Model
+ * @package app\models
+ */
 abstract class Model
 {
     /**
@@ -19,6 +26,9 @@ abstract class Model
      */
     protected $tabela;
 
+    /**
+     * Model constructor.
+     */
     public function __construct()
     {
         $this->bd = new Bd();

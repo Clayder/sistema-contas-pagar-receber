@@ -1,7 +1,14 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 namespace app\database;
 use \PDO;
 
+/**
+ * Class Driver
+ * @package app\database
+ */
 abstract class Driver
 {
     /**
@@ -9,6 +16,10 @@ abstract class Driver
      */
     protected $pdo;
 
+    /**
+     * Conecta com o banco de dados.
+     * @return void
+     */
     protected function connect(){
         try
         {

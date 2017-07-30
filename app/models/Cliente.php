@@ -1,17 +1,21 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: clayder
- * Date: 20/07/17
- * Time: 15:19
+ * @author Peter Clayder
  */
 
 namespace app\models;
 
 use app\database\Bd;
 
+/**
+ * Class Cliente
+ * @package app\models
+ */
 class Cliente extends Model
 {
+    /**
+     * Cliente constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -24,12 +28,12 @@ class Cliente extends Model
      */
     public function insert($arrayDados)
     {
-        if($arrayDados['nome'] == ''){
+        if ($arrayDados['nome'] == '') {
             flashData("cadastrarClienteValid", mensagemAlerta("danger", "Campo nome obrigatório."));
             return false;
-        }else{
+        } else {
             try {
-                $sql = "INSERT INTO ".$this->tabela." (nome, dateTime) VALUES (:nome, :dateTime);";
+                $sql = "INSERT INTO " . $this->tabela . " (nome, dateTime) VALUES (:nome, :dateTime);";
                 $sth = $this->pdo->prepare($sql);
                 $sth->bindValue(':nome', $arrayDados['nome']);
                 $sth->bindValue(':dateTime', $arrayDados['dateTime']);
@@ -52,13 +56,13 @@ class Cliente extends Model
      */
     public function update($id, $nome)
     {
-        if($nome == ''){
+        if ($nome == '') {
             flashData("editarClienteValid", mensagemAlerta("danger", "Campo nome obrigatório."));
             return false;
-        }else{
+        } else {
             $dateTime = dateTime();
             try {
-                $sql = "UPDATE ".$this->tabela." SET nome=?, dateTime=? WHERE id=?";
+                $sql = "UPDATE " . $this->tabela . " SET nome=?, dateTime=? WHERE id=?";
                 $stm = $this->pdo->prepare($sql);
                 $stm->bindValue(1, $nome);
                 $stm->bindValue(2, $dateTime);
@@ -70,34 +74,50 @@ class Cliente extends Model
                 return false;
             }
         }
-        
+
     }
 
-    public function delete($id){
-
-        // verifica se o cliente é chave estrangeira das tabelas pagar e receber
-
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function delete($id)
+    {
         $existeClientePagar = $this->getClientePagar($id);
         $existeClienteReceber = $this->getClienteReceber($id);
-        
-        if($existeClientePagar || $existeClienteReceber){
+        // verifica se o cliente é chave estrangeira das tabelas pagar e receber
+        if ($existeClientePagar || $existeClienteReceber) {
             flashData("excluirClienteFk", mensagemAlerta("warning", "Não foi possível excluír esse cliente, pois ele está relacionado a alguma conta (pagar/receber)"));
             return false;
-        }else{
+        } else {
             return parent::delete($id);
         }
-        
+
     }
 
-    public function getClientePagar($id){
+    /**
+     * @param $id
+     * @return object
+     */
+    public function getClientePagar($id)
+    {
         return $this->bd->get("pagar", array('campo' => "fkCliente", 'busca' => $id));
     }
 
-    public function getClienteReceber($id){
+    /**
+     * @param $id
+     * @return object
+     */
+    public function getClienteReceber($id)
+    {
         return $this->bd->get("receber", array('campo' => "fk_cliente", 'busca' => $id));
     }
 
-    public function qtdClientes(){
+    /**
+     * @return int
+     */
+    public function qtdClientes()
+    {
         return $this->bd->countAll($this->tabela);
     }
 

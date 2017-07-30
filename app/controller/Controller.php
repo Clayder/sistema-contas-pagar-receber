@@ -4,7 +4,13 @@
  */
 
 namespace app\controller;
+
 use app\view\View;
+
+/**
+ * Class Controller
+ * @package app\controller
+ */
 abstract class Controller
 {
     /**
@@ -13,13 +19,13 @@ abstract class Controller
     protected $view;
 
     /**
-     * @var array Recebe todos os scripts que vão ser carregados na header
-    */
+     * @var array Recebe todos os scripts que vão ser carregados na header.
+     */
     private $scriptHeader;
 
     /**
-     * @var array Recebe todos os scripts que vão ser carregados no footer
-    */
+     * @var array Recebe todos os scripts que vão ser carregados no footer.
+     */
     private $scriptFooter;
 
     /**
@@ -27,6 +33,9 @@ abstract class Controller
      */
     protected $pasta;
 
+    /**
+     * Controller constructor.
+     */
     public function __construct()
     {
         $this->view = new View();
@@ -35,36 +44,60 @@ abstract class Controller
         flashDataVerifica();
     }
 
-    protected function pagina($view, $dados = array()){
+    /**
+     * Carrega um arquivo da view.
+     * @param string $view
+     * @param array $dados
+     * @return void
+     */
+    protected function pagina($view, $dados = array())
+    {
         $this->view->header($this->scriptHeader);
         $this->view->menuProfile();
         $this->view->sidebar();
         $this->view->menuFooter();
         $this->view->topNavigation();
-        $this->view->principal($this->pasta."/".$view, $dados);
+        $this->view->principal($this->pasta . "/" . $view, $dados);
         $this->view->footer($this->scriptFooter);
     }
 
-    protected function setScripHeader($script){
+    /**
+     * @param string $script
+     * @return void
+     */
+    protected function setScripHeader($script)
+    {
         $this->scriptHeader[] = $script;
     }
 
-    protected function setScripFooter($script){
+    /**
+     * @param $script
+     * @return void
+     */
+    protected function setScripFooter($script)
+    {
         $this->scriptFooter[] = $script;
     }
 
-
-    public function carregarCss(){
+    /**
+     * @return void
+     */
+    public function carregarCss()
+    {
         $this->setScripHeader(inserirCss("datatables.net-bs/css/dataTables.bootstrap.min.css"));
         $this->setScripHeader(inserirCss("datatables.net-buttons-bs/css/buttons.bootstrap.min.css"));
         $this->setScripHeader(inserirCss("datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css"));
         $this->setScripHeader(inserirCss("datatables.net-responsive-bs/css/responsive.bootstrap.min.css"));
         $this->setScripHeader(inserirCss("datatables.net-scroller-bs/css/scroller.bootstrap.min.css"));
         $this->setScripHeader(inserirCss("bootstrap-daterangepicker/daterangepicker.css"));
-        
+
     }
 
-    public function carregarJs(){
+    /**
+     * @return void
+     */
+    public function carregarJs()
+    {
         $this->setScripFooter(inserirJs("datatables.net/js/jquery.dataTables.min.js"));
         $this->setScripFooter(inserirJs("datatables.net-bs/js/dataTables.bootstrap.min.js"));
         $this->setScripFooter(inserirJs("datatables.net-buttons/js/dataTables.buttons.min.js"));
@@ -82,11 +115,6 @@ abstract class Controller
         $this->setScripFooter(inserirJs("pdfmake/build/vfs_fonts.js"));
         $this->setScripFooter(inserirJs("moment/min/moment.min.js"));
         $this->setScripFooter(inserirJs("bootstrap-daterangepicker/daterangepicker.js"));
-        $this->setScripFooter("<script src=\"".baseUrl("assets/js/intervaloData/config.js")."\"></script> \n");
+        $this->setScripFooter("<script src=\"" . baseUrl("assets/js/intervaloData/config.js") . "\"></script> \n");
     }
-
-
-
-
-    
 }

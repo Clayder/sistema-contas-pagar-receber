@@ -4,12 +4,15 @@
  */
 
 namespace app\config;
-
-use app\controller\Controller;
-
+/**
+ * Class Routes
+ * @package app\config
+ */
 class Routes
 {
     /**
+     * @param string $class
+     * @param string $metodo
      * @return void
      */
     public static function callController($class, $metodo)

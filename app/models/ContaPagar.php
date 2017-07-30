@@ -1,9 +1,19 @@
 <?php
+/**
+ * @author Peter Clayder
+ */
 
 namespace app\models;
 
+/**
+ * Class ContaPagar
+ * @package app\models
+ */
 class ContaPagar extends Conta
 {
+    /**
+     * ContaPagar constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -74,6 +84,10 @@ class ContaPagar extends Conta
 
     }
 
+    /**
+     * @param string $dado
+     * @return bool
+     */
     private function formValidacaoVencimento($dado)
     {
         if ($dado === "") {
@@ -110,10 +124,8 @@ class ContaPagar extends Conta
                 LEFT JOIN categoria ON categoria.id = pagar.fkCategoria";
     }
 
-    
-
     /**
-     * Retorna as contas que vão vencer até daqui 30 dias
+     * Retorna as contas que vão vencer até daqui 30 dias.
      * @return array
      */
     public function contasPagar30Dias()
@@ -121,7 +133,12 @@ class ContaPagar extends Conta
         return $this->contas30Dias(" WHERE pagar.vencimento>=? AND pagar.vencimento<=? AND pagar.pago = 0");
     }
 
-    public function graficoBarra($ano){
+    /**
+     * @param int $ano
+     * @return array
+     */
+    public function graficoBarra($ano)
+    {
         $where = "SELECT MONTH(pagar.vencimento) as mes, SUM(pagar.valor) as total from pagar
                     WHERE YEAR(pagar.vencimento) = ? AND pagar.pago = 1
                     GROUP BY MONTH(pagar.vencimento)
@@ -131,19 +148,25 @@ class ContaPagar extends Conta
         $valores = array();
         // Não existe mês zero
         $valores[0] = 0;
-        foreach($dados as $chave => $conteudo){
+        foreach ($dados as $chave => $conteudo) {
             $meses[$conteudo->mes] = $conteudo->mes;
-            $valores[$conteudo->mes -1] = $conteudo->total;
+            $valores[$conteudo->mes - 1] = $conteudo->total;
         }
-        for($i = 1; $i <= 12; $i++){
-            if(!in_array($i, $meses)){
-                $valores[$i-1] = 0;
+        for ($i = 1; $i <= 12; $i++) {
+            if (!in_array($i, $meses)) {
+                $valores[$i - 1] = 0;
             }
         }
         return $valores;
     }
 
-    public function filtroData($dataInicio, $dataFim){
+    /**
+     * @param date $dataInicio
+     * @param date $dataFim
+     * @return array
+     */
+    public function filtroData($dataInicio, $dataFim)
+    {
         $where = " WHERE pagar.vencimento >=? AND pagar.vencimento <= ?";
         return $this->filtroPorData($dataInicio, $dataFim, $where);
     }

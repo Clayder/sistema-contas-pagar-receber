@@ -1,4 +1,7 @@
 <?php
+/**
+ * Arquivo que recebe todas as requisições do sistema.
+ */
 require 'autoload.php';
 if (isset($_GET['class']) && isset($_GET['metodo'])) {
     $class = $_GET['class'];
